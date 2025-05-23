@@ -1,0 +1,70 @@
+Create a Triangle class. Add exception handling statements to ensure the following
+conditions: all sides are greater than 0 and sum of any two sides are greater than the
+third side. The class should also have overloaded functions for calculating the area
+of a right angled triangle as well as using Heron's formula to calculate the area of any
+type of triangle
+#include <iostream>
+#include <cmath>
+#include <stdexcept>
+
+using namespace std;
+
+class Triangle {
+private:
+    double a, b, c;
+
+    void validateSides() {
+        if (a <= 0 || b <= 0 || c <= 0)
+            throw invalid_argument("All sides must be greater than 0.");
+        if (a + b <= c || a + c <= b || b + c <= a)
+            throw invalid_argument("Sum of any two sides must be greater than the third side.");
+    }
+
+public:
+    // Constructor
+    Triangle(double side1, double side2, double side3) : a(side1), b(side2), c(side3) {
+        validateSides();
+    }
+
+    // Overloaded method for right-angled triangle area (base & height)
+    double area(double base, double height) {
+        if (base <= 0 || height <= 0)
+            throw invalid_argument("Base and height must be greater than 0.");
+        return 0.5 * base * height;
+    }
+
+    // Overloaded method for any triangle area using Heron's formula
+    double area() {
+        validateSides(); // Ensure sides are still valid
+        double s = (a + b + c) / 2.0;  // semi-perimeter
+        return sqrt(s * (s - a) * (s - b) * (s - c));
+    }
+
+    void displaySides() {
+        cout << "Sides: a=" << a << ", b=" << b << ", c=" << c << endl;
+    }
+};
+
+int main() {
+    try {
+        double a, b, c;
+        cout << "Enter sides of the triangle: ";
+        cin >> a >> b >> c;
+
+        Triangle t(a, b, c);
+        t.displaySides();
+
+        cout << "Area using Heron's formula: " << t.area() << endl;
+
+        // For right-angled triangle, ask user for base and height
+        double base, height;
+        cout << "\nEnter base and height for right-angled triangle area calculation: ";
+        cin >> base >> height;
+        cout << "Area of right-angled triangle: " << t.area(base, height) << endl;
+    }
+    catch (const invalid_argument& e) {
+        cerr << "Error: " << e.what() << endl;
+    }
+
+    return 0;
+}
