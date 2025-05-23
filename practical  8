@@ -1,0 +1,70 @@
+Create a Matrix class. Write a menu-driven program to perform following Matrix
+operations (exceptions should be thrown by the functions if matrices passed to them
+are incompatible and handled by the main() function):
+a. Sum
+b. Product
+c. Transpose
+#include <iostream>
+#include <vector>
+#include <stdexcept>  // for exceptions
+
+using namespace std;
+
+class Matrix {
+    vector<vector<int>> mat;
+    int rows, cols;
+
+public:
+    Matrix(int r, int c) : rows(r), cols(c) {
+        mat.resize(rows, vector<int>(cols, 0));
+    }
+
+    void input() {
+        cout << "Enter elements (" << rows << "x" << cols << "):\n";
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < cols; j++)
+                cin >> mat[i][j];
+    }
+
+    void display() const {
+        cout << "Matrix (" << rows << "x" << cols << "):\n";
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++)
+                cout << mat[i][j] << " ";
+            cout << "\n";
+        }
+    }
+
+    int getRows() const { return rows; }
+    int getCols() const { return cols; }
+
+    Matrix sum(const Matrix& other) const {
+        if (rows != other.rows || cols != other.cols)
+            throw invalid_argument("Matrices dimensions do not match for addition.");
+
+        Matrix result(rows, cols);
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < cols; j++)
+                result.mat[i][j] = mat[i][j] + other.mat[i][j];
+
+        return result;
+    }
+
+    Matrix product(const Matrix& other) const {
+        if (cols != other.rows)
+            throw invalid_argument("Matrices dimensions do not match for multiplication.");
+
+        Matrix result(rows, other.cols);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < other.cols; j++) {
+                int sum = 0;
+                for (int k = 0; k < cols; k++)
+                    sum += mat[i][k] * other.mat[k][j];
+                result.mat[i][j] = sum;
+            }
+        }
+        return result;
+    }
+
+    Matrix transpose() const {
+        Matrix resul
