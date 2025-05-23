@@ -1,0 +1,80 @@
+Define a class Person having name as a data member. Inherit two classes Student and
+Employee from Person. Student has additional attributes as course, marks and year
+and Employee has department and salary. Write display() method in all the three
+classes to display the corresponding attributes. Provide the necessary methods to show
+runtime polymorphism.
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Person {
+protected:
+    string name;
+
+public:
+    Person(const string& n) : name(n) {}
+
+    // Virtual display function to enable runtime polymorphism
+    virtual void display() const {
+        cout << "Name: " << name << endl;
+    }
+
+    // Virtual destructor (good practice when using polymorphism)
+    virtual ~Person() {}
+};
+
+class Student : public Person {
+private:
+    string course;
+    int marks;
+    int year;
+
+public:
+    Student(const string& n, const string& c, int m, int y)
+        : Person(n), course(c), marks(m), year(y) {}
+
+    void display() const override {
+        Person::display();  // Display name
+        cout << "Course: " << course << endl;
+        cout << "Marks: " << marks << endl;
+        cout << "Year: " << year << endl;
+    }
+};
+
+class Employee : public Person {
+private:
+    string department;
+    double salary;
+
+public:
+    Employee(const string& n, const string& d, double s)
+        : Person(n), department(d), salary(s) {}
+
+    void display() const override {
+        Person::display();  // Display name
+        cout << "Department: " << department << endl;
+        cout << "Salary: " << salary << endl;
+    }
+};
+
+int main() {
+    // Pointer to base class for runtime polymorphism
+    Person* p;
+
+    Student s("Alice", "Computer Science", 85, 3);
+    Employee e("Bob", "HR", 55000.50);
+
+    // Point to Student object
+    p = &s;
+    cout << "Student Details:\n";
+    p->display();
+    cout << endl;
+
+    // Point to Employee object
+    p = &e;
+    cout << "Employee Details:\n";
+    p->display();
+    cout << endl;
+
+    return 0;
+}
