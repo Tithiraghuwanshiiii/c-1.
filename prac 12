@@ -1,0 +1,102 @@
+Copy the contents of one text file to another file, after removing all whitespaces.
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+class Student {
+public:
+    int rollNo;
+    string name;
+    string className;
+    int year;
+    int totalMarks;
+
+    // Write object to binary file
+    void writeToFile(ofstream& ofs) {
+        ofs.write((char*)&rollNo, sizeof(rollNo));
+
+        size_t len = name.size();
+        ofs.write((char*)&len, sizeof(len));
+        ofs.write(name.c_str(), len);
+
+        len = className.size();
+        ofs.write((char*)&len, sizeof(len));
+        ofs.write(className.c_str(), len);
+
+        ofs.write((char*)&year, sizeof(year));
+        ofs.write((char*)&totalMarks, sizeof(totalMarks));
+    }
+
+    // Read object from binary file
+    void readFromFile(ifstream& ifs) {
+        ifs.read((char*)&rollNo, sizeof(rollNo));
+
+        size_t len;
+        ifs.read((char*)&len, sizeof(len));
+        name.resize(len);
+        ifs.read(&name[0], len);
+
+        ifs.read((char*)&len, sizeof(len));
+        className.resize(len);
+        ifs.read(&className[0], len);
+
+        ifs.read((char*)&year, sizeof(year));
+        ifs.read((char*)&totalMarks, sizeof(totalMarks));
+    }
+
+    void display() const {
+        cout << "Roll No: " << rollNo << "\n";
+        cout << "Name: " << name << "\n";
+        cout << "Class: " << className << "\n";
+        cout << "Year: " << year << "\n";
+        cout << "Total Marks: " << totalMarks << "\n";
+        cout << "-------------------------\n";
+    }
+};
+
+int main() {
+    Student students[5];
+
+    // Input 5 students from user
+    cout << "Enter details of 5 students:\n";
+    for (int i = 0; i < 5; ++i) {
+        cout << "Student " << (i + 1) << ":\n";
+        cout << "Roll No: "; cin >> students[i].rollNo; cin.ignore();
+        cout << "Name: "; getline(cin, students[i].name);
+        cout << "Class: "; getline(cin, students[i].className);
+        cout << "Year: "; cin >> students[i].year;
+        cout << "Total Marks: "; cin >> students[i].totalMarks; cin.ignore();
+        cout << endl;
+    }
+
+    // Write to file
+    ofstream ofs("students.dat", ios::binary);
+    if (!ofs) {
+        cerr << "Error opening file for writing.\n";
+        return 1;
+    }
+
+    for (int i = 0; i < 5; ++i) {
+        students[i].writeToFile(ofs);
+    }
+    ofs.close();
+
+    // Read from file and display
+    ifstream ifs("students.dat", ios::binary);
+    if (!ifs) {
+        cerr << "Error opening file for reading.\n";
+        return 1;
+    }
+
+    cout << "\nStudent records retrieved from file:\n";
+    for (int i = 0; i < 5; ++i) {
+        Student s;
+        s.readFromFile(ifs);
+        s.display();
+    }
+    ifs.close();
+
+    return 0;
+}
