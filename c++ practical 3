@@ -1,0 +1,35 @@
+#write a program that prints a table indicating the number of occurrences of each
+#alphabet in the text entered as command line arguments.
+#include <iostream>
+#include <cctype>    // for isalpha and tolower
+#include <iomanip>   // for formatting
+
+using namespace std;
+
+int main(int argc, char* argv[]) {
+    int freq[26] = {0}; // Array to store frequencies of each letter
+
+    // Iterate over all command-line arguments
+    for (int i = 1; i < argc; ++i) {
+        char* word = argv[i];
+        for (int j = 0; word[j] != '\0'; ++j) {
+            if (isalpha(word[j])) {
+                char ch = tolower(word[j]);
+                freq[ch - 'a']++;
+            }
+        }
+    }
+
+    // Print the frequency table
+    cout << "Alphabet Frequency Table:\n";
+    cout << "-------------------------\n";
+    cout << left << setw(10) << "Letter" << "Count" << endl;
+    cout << "-------------------------\n";
+    for (int i = 0; i < 26; ++i) {
+        if (freq[i] > 0) {
+            cout << left << setw(10) << char('a' + i) << freq[i] << endl;
+        }
+    }
+
+    return 0;
+}
